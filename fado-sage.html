@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fado – Sage & Stone</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sage: #7C9A7E;
+    --sage-deep: #4E6E51;
+    --sage-pale: #D4E4D5;
+    --stone: #C4A882;
+    --stone-dark: #8B7355;
+    --copper: #B87333;
+    --ivory: #F7F3EE;
+    --warm-white: #FDFAF6;
+    --dark: #1E2820;
+    --text: #2D3B2E;
+    --text-light: #5A6B5C;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: Georgia, serif; background: var(--warm-white); color: var(--text); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(253,250,246,0.96); backdrop-filter: blur(8px);
+    padding: 1.4rem 5rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo {
+    display: flex; align-items: baseline; gap: 0.3rem;
+    font-size: 1.3rem; letter-spacing: 0.1em; color: var(--sage-deep);
+  }
+  .nav-logo small {
+    font-size: 0.65rem; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--stone); font-style: normal;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--text-light);
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    position: relative; transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px; background: var(--sage);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--sage-deep); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    padding: 0.6rem 1.4rem;
+    border: 1px solid var(--sage); color: var(--sage-deep);
+    text-decoration: none; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--sage); color: white; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-left {
+    background: var(--sage-deep);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 4rem 5rem 5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-left::before {
+    content: '';
+    position: absolute; bottom: -80px; left: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero-left::after {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+  .hero-kicker {
+    font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase;
+    color: rgba(212,228,213,0.6); margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-kicker::before { content: ''; width: 30px; height: 1px; background: rgba(212,228,213,0.4); }
+  .hero h1 {
+    font-size: clamp(2.6rem, 4.5vw, 3.8rem); font-weight: normal;
+    color: var(--ivory); line-height: 1.15; margin-bottom: 1.8rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--sage-pale); }
+  .hero-desc {
+    color: rgba(212,228,213,0.7); line-height: 1.85;
+    font-size: 0.95rem; margin-bottom: 2.5rem; max-width: 400px;
+  }
+  .hero-actions { display: flex; gap: 1rem; }
+  .btn-light {
+    padding: 0.85rem 1.8rem;
+    background: var(--ivory); color: var(--sage-deep);
+    text-decoration: none; font-size: 0.78rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .btn-light:hover { background: var(--sage-pale); }
+  .btn-ghost {
+    padding: 0.85rem 1.8rem;
+    border: 1px solid rgba(212,228,213,0.4); color: var(--sage-pale);
+    text-decoration: none; font-size: 0.78rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: all 0.3s; background: transparent;
+  }
+  .btn-ghost:hover { border-color: var(--sage-pale); background: rgba(212,228,213,0.08); }
+  .hero-right {
+    background: var(--ivory);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0; position: relative; overflow: hidden;
+  }
+  /* Botanical sketch overlay */
+  .hero-sketch-wrap {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-sketch-wrap svg { width: 85%; height: auto; opacity: 0.12; }
+  .hero-stats {
+    position: relative; z-index: 2;
+    background: white; margin: 2rem;
+    padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.06);
+  }
+  .hero-stat { text-align: center; padding: 0.5rem; }
+  .hero-stat-num { font-size: 2rem; color: var(--sage-deep); display: block; }
+  .hero-stat-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-light); }
+  .hero-tag {
+    position: absolute; top: 2rem; right: 2rem; z-index: 2;
+    background: var(--copper); color: white;
+    padding: 0.5rem 1rem; font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+
+  /* SECTION BASE */
+  section { padding: 6rem 5rem; }
+  .label {
+    display: block; font-size: 0.65rem; letter-spacing: 0.45em;
+    text-transform: uppercase; color: var(--sage); margin-bottom: 0.7rem;
+  }
+  h2 {
+    font-size: clamp(1.7rem, 3vw, 2.5rem); font-weight: normal;
+    color: var(--text); margin-bottom: 0.8rem;
+  }
+  .rule { width: 40px; height: 2px; background: var(--stone); margin: 1.2rem 0 2rem; }
+
+  /* PROCESS (asymmetric) */
+  .process-section { background: var(--warm-white); }
+  .process-intro {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; margin-bottom: 5rem; align-items: end;
+  }
+  .process-intro p { color: var(--text-light); line-height: 1.85; font-size: 0.95rem; }
+  .process-stages {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--sage-pale);
+  }
+  .stage {
+    background: var(--warm-white); padding: 2.5rem 1.8rem;
+    transition: background 0.3s;
+  }
+  .stage:hover { background: white; }
+  .stage-num {
+    font-size: 3rem; color: rgba(124,154,126,0.15); font-style: italic;
+    display: block; margin-bottom: 1rem; line-height: 1;
+  }
+  .stage h3 { font-size: 1rem; color: var(--sage-deep); margin-bottom: 0.7rem; font-weight: normal; }
+  .stage p { font-size: 0.85rem; color: var(--text-light); line-height: 1.75; }
+  .sketch-accent {
+    margin-top: 1rem; padding-top: 1rem;
+    border-top: 1px dashed rgba(124,154,126,0.3);
+    font-size: 0.75rem; color: var(--sage); font-style: italic;
+  }
+
+  /* SKETCH FEATURE */
+  .sketch-feature {
+    background: var(--ivory);
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 0; align-items: stretch;
+  }
+  .sketch-panel {
+    background: white; padding: 4rem;
+    border-right: 1px solid rgba(196,168,130,0.2);
+  }
+  .sketch-panel svg { width: 100%; max-width: 360px; display: block; }
+  .sketch-label {
+    display: flex; gap: 0.5rem; align-items: center; margin-top: 1.2rem;
+    font-size: 0.72rem; color: var(--stone-dark); letter-spacing: 0.15em;
+  }
+  .sketch-label::before { content: '◈'; color: var(--copper); font-size: 0.6rem; }
+  .sketch-info { padding: 4rem; display: flex; flex-direction: column; justify-content: center; }
+  .sketch-info p { color: var(--text-light); line-height: 1.85; margin-bottom: 1.2rem; font-size: 0.95rem; }
+  .detail-list { list-style: none; margin-top: 1.5rem; }
+  .detail-list li {
+    padding: 0.8rem 0; border-bottom: 1px solid rgba(196,168,130,0.2);
+    font-size: 0.88rem; color: var(--text-light); display: flex; align-items: center; gap: 0.8rem;
+  }
+  .detail-list li:last-child { border-bottom: none; }
+  .detail-list li::before { content: '—'; color: var(--copper); font-size: 0.7rem; flex-shrink: 0; }
+
+  /* PALETTE */
+  .palette-section { background: var(--dark); }
+  .palette-inner { max-width: 1000px; }
+  .palette-section h2 { color: var(--ivory); }
+  .palette-section .label { color: var(--sage-pale); }
+  .palette-section p { color: rgba(212,228,213,0.6); max-width: 520px; line-height: 1.85; font-size: 0.95rem; margin-bottom: 3rem; }
+  .palette-bands {
+    display: flex; gap: 0; height: 100px;
+    overflow: hidden; border-radius: 2px;
+  }
+  .band { flex: 1; position: relative; transition: flex 0.4s; cursor: default; }
+  .band:hover { flex: 2.5; }
+  .band-name {
+    position: absolute; bottom: 0.8rem; left: 50%; transform: translateX(-50%) rotate(-90deg);
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    white-space: nowrap; color: rgba(255,255,255,0.6);
+    transform-origin: center;
+  }
+  .palette-note {
+    margin-top: 2.5rem; padding: 1.5rem;
+    border-left: 2px solid var(--sage);
+    background: rgba(124,154,126,0.08);
+  }
+  .palette-note p { margin: 0; color: rgba(212,228,213,0.5) !important; font-size: 0.85rem !important; font-style: italic; }
+
+  /* SERVICES */
+  .services-section { background: var(--warm-white); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem;
+  }
+  .service-item {
+    padding: 2rem;
+    border: 1px solid rgba(196,168,130,0.2);
+    background: white; display: flex; gap: 1.5rem; align-items: flex-start;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .service-item:hover { border-color: var(--sage); box-shadow: 0 4px 20px rgba(78,110,81,0.08); }
+  .service-icon-wrap {
+    width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+    background: var(--sage-pale); display: flex; align-items: center; justify-content: center;
+    color: var(--sage-deep); font-size: 1rem;
+  }
+  .service-text h3 { font-size: 1rem; color: var(--text); margin-bottom: 0.5rem; font-weight: normal; }
+  .service-text p { font-size: 0.85rem; color: var(--text-light); line-height: 1.7; }
+
+  /* TESTIMONIALS */
+  .testi-section { background: var(--ivory); }
+  .testi-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: start; }
+  .testi-intro h2 { color: var(--text); }
+  .testi-intro p { color: var(--text-light); font-size: 0.9rem; line-height: 1.8; margin-top: 0.5rem; }
+  .testi-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .testi-card {
+    background: white; padding: 2rem;
+    border-bottom: 2px solid var(--sage-pale);
+    transition: border-color 0.3s;
+  }
+  .testi-card:hover { border-color: var(--sage); }
+  .testi-text { font-size: 0.92rem; color: var(--text-light); font-style: italic; line-height: 1.8; margin-bottom: 1rem; }
+  .testi-by { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage-deep); }
+
+  /* CONTACT */
+  .contact-section {
+    background: white;
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start;
+  }
+  .contact-left h2 { color: var(--text); }
+  .contact-left p { color: var(--text-light); line-height: 1.85; font-size: 0.95rem; margin-bottom: 2rem; }
+  .contact-item { font-size: 0.85rem; color: var(--text-light); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.7rem; }
+  .ci-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--copper); flex-shrink: 0; }
+  form { display: flex; flex-direction: column; gap: 1rem; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  input, textarea, select {
+    width: 100%; padding: 0.85rem 1rem;
+    border: 1px solid rgba(196,168,130,0.3); background: var(--warm-white);
+    font-family: Georgia; font-size: 0.88rem; color: var(--text);
+    outline: none; transition: border-color 0.3s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--sage); }
+  textarea { resize: vertical; min-height: 120px; }
+  .sub-btn {
+    padding: 0.9rem 2rem; width: fit-content;
+    background: var(--sage-deep); color: white;
+    border: none; cursor: pointer; font-family: Georgia;
+    font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase;
+    transition: background 0.3s;
+  }
+  .sub-btn:hover { background: var(--dark); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(212,228,213,0.4);
+    text-align: center; padding: 2.5rem;
+    font-size: 0.78rem; letter-spacing: 0.15em;
+  }
+  footer em { color: var(--sage-pale); font-style: normal; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links, .nav-cta { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 250px; }
+    .process-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+    .process-stages { grid-template-columns: 1fr 1fr; }
+    .sketch-feature { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .testi-layout { grid-template-columns: 1fr; gap: 2rem; }
+    .contact-section { grid-template-columns: 1fr; gap: 2.5rem; }
+    .row2 { grid-template-columns: 1fr; }
+    .palette-bands { height: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Fado <small>Event Planning</small></div>
+  <ul class="nav-links">
+    <li><a href="#process">Process</a></li>
+    <li><a href="#sketch">The Sketch</a></li>
+    <li><a href="#palette">Palette</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#stories">Stories</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Begin</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-kicker">Wedding Planning · Est. 2014</div>
+    <h1>Every Detail<br>in <em>Perfect</em><br>Harmony</h1>
+    <p class="hero-desc">From the first sketch drawn across the table to the last petal placed on the day — we ensure that everything in your wedding belongs to the same beautiful story.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-light">Begin Your Story</a>
+      <a href="#process" class="btn-ghost">Our Process</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-tag">Est. 2014</div>
+    <div class="hero-sketch-wrap">
+      <svg viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Botanical branch sketch -->
+        <path d="M200 480 L200 100" stroke="#4E6E51" stroke-width="2" stroke-dasharray="6 3"/>
+        <path d="M200 350 Q160 310 130 280" stroke="#4E6E51" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+        <path d="M200 300 Q250 270 270 240" stroke="#4E6E51" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+        <path d="M200 250 Q155 220 140 185" stroke="#4E6E51" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+        <path d="M200 200 Q240 175 260 145" stroke="#4E6E51" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+        <ellipse cx="120" cy="265" rx="22" ry="14" stroke="#4E6E51" stroke-dasharray="3 2" fill="none" transform="rotate(-30 120 265)"/>
+        <ellipse cx="275" cy="230" rx="22" ry="14" stroke="#4E6E51" stroke-dasharray="3 2" fill="none" transform="rotate(20 275 230)"/>
+        <ellipse cx="132" cy="175" rx="20" ry="12" stroke="#4E6E51" stroke-dasharray="3 2" fill="none" transform="rotate(-25 132 175)"/>
+        <ellipse cx="265" cy="135" rx="20" ry="12" stroke="#4E6E51" stroke-dasharray="3 2" fill="none" transform="rotate(15 265 135)"/>
+        <circle cx="200" cy="100" r="15" stroke="#C4A882" stroke-dasharray="3 2" fill="none"/>
+        <circle cx="200" cy="100" r="8" stroke="#C4A882" stroke-dasharray="2 2" fill="none"/>
+      </svg>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-num">250+</span><span class="hero-stat-label">Weddings</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">12</span><span class="hero-stat-label">Years</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">98%</span><span class="hero-stat-label">Happy Couples</span></div>
+      <div class="hero-stat"><span class="hero-stat-num">30+</span><span class="hero-stat-label">Venues</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="process" class="process-section">
+  <div class="process-intro">
+    <div>
+      <span class="label">How We Work</span>
+      <h2>A Process Built<br>on Clarity</h2>
+      <div class="rule"></div>
+    </div>
+    <p>Planning a wedding should feel exciting, not overwhelming. Our process is designed around one principle: you should always be able to see exactly where you're headed — because we draw it for you, step by step.</p>
+  </div>
+  <div class="process-stages">
+    <div class="stage">
+      <span class="stage-num">01</span>
+      <h3>Listen & Sketch</h3>
+      <p>In our first meeting, we draw as you speak. Your vision gets a visual form before the session ends.</p>
+      <div class="sketch-accent">Pencil meets paper, day one</div>
+    </div>
+    <div class="stage">
+      <span class="stage-num">02</span>
+      <h3>Choose Your Palette</h3>
+      <p>Together we select the colors and textures that will define your entire day — the thread connecting all elements.</p>
+      <div class="sketch-accent">The heart of your design</div>
+    </div>
+    <div class="stage">
+      <span class="stage-num">03</span>
+      <h3>Refine the Details</h3>
+      <p>Session by session, we zoom in. Every detail is examined for harmony — nothing is too small to consider.</p>
+      <div class="sketch-accent">Where magic is made</div>
+    </div>
+    <div class="stage">
+      <span class="stage-num">04</span>
+      <h3>Execute Flawlessly</h3>
+      <p>On the day, we are there — eyes on every detail, ensuring everything unfolds exactly as imagined.</p>
+      <div class="sketch-accent">Your vision, realized</div>
+    </div>
+  </div>
+</section>
+
+<section id="sketch" class="sketch-feature">
+  <div class="sketch-panel">
+    <svg viewBox="0 0 360 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Table setting sketch -->
+      <ellipse cx="180" cy="200" rx="130" ry="70" stroke="#4E6E51" stroke-dasharray="5 3" stroke-width="1.5" fill="none"/>
+      <!-- Centerpiece -->
+      <path d="M180 130 L180 195" stroke="#4E6E51" stroke-dasharray="3 2" stroke-width="1.5"/>
+      <circle cx="180" cy="120" r="20" stroke="#4E6E51" stroke-dasharray="3 2" stroke-width="1.2" fill="none"/>
+      <circle cx="180" cy="120" r="10" stroke="#C4A882" stroke-dasharray="2 2" stroke-width="1" fill="none"/>
+      <!-- Place settings around table -->
+      <ellipse cx="180" cy="165" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none"/>
+      <ellipse cx="130" cy="185" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none" transform="rotate(-20 130 185)"/>
+      <ellipse cx="230" cy="185" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none" transform="rotate(20 230 185)"/>
+      <ellipse cx="100" cy="210" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none" transform="rotate(-35 100 210)"/>
+      <ellipse cx="260" cy="210" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none" transform="rotate(35 260 210)"/>
+      <ellipse cx="130" cy="230" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none" transform="rotate(-15 130 230)"/>
+      <ellipse cx="230" cy="230" rx="12" ry="8" stroke="#B87333" stroke-dasharray="2 2" stroke-width="1" fill="none" transform="rotate(15 230 230)"/>
+      <!-- Candles -->
+      <rect x="155" y="145" width="4" height="16" stroke="#C4A882" stroke-dasharray="2 1" stroke-width="1" fill="none"/>
+      <rect x="200" y="148" width="4" height="14" stroke="#C4A882" stroke-dasharray="2 1" stroke-width="1" fill="none"/>
+      <!-- Annotations -->
+      <text x="10" y="130" fill="#7C9A7E" font-size="9" font-family="Georgia" font-style="italic">eucalyptus?</text>
+      <line x1="55" y1="127" x2="155" y2="118" stroke="#7C9A7E" stroke-dasharray="2 2" stroke-width="0.8"/>
+      <text x="275" y="175" fill="#B87333" font-size="9" font-family="Georgia" font-style="italic">linen</text>
+      <text x="275" y="186" fill="#B87333" font-size="9" font-family="Georgia" font-style="italic">napkin</text>
+      <text x="60" y="265" fill="#4E6E51" font-size="8" font-family="Georgia">sage · stone · copper</text>
+    </svg>
+    <div class="sketch-label">Tablescape sketch — Session 2, client review</div>
+  </div>
+  <div class="sketch-info">
+    <span class="label">The Sketch Process</span>
+    <h2>See It Before It Exists</h2>
+    <div class="rule"></div>
+    <p>At Fado, every consultation ends with something tangible. We sketch your wedding details live — ceremony arches, table layouts, floral arrangements — so you leave each session with a real image in your hands.</p>
+    <p>This isn't decoration. It's clarity. When you can see it, you can truly decide — and together we refine every line until it's exactly right.</p>
+    <ul class="detail-list">
+      <li>Ceremony architecture drawn from your first words</li>
+      <li>Table arrangements sketched to scale, with dimensions</li>
+      <li>Floral compositions shown as loose botanical studies</li>
+      <li>Color notes annotated directly on the sketch</li>
+      <li>Revisions made live, session by session</li>
+    </ul>
+  </div>
+</section>
+
+<section id="palette" class="palette-section">
+  <div class="palette-inner">
+    <span class="label">Your Color Foundation</span>
+    <h2>The Palette Decides Everything</h2>
+    <div class="rule"></div>
+    <p>Before anything else, we find your palette. These colors will flow through your florals, your linens, your stationery, your lighting — every element in your wedding will speak the same visual language.</p>
+    <div class="palette-bands">
+      <div class="band" style="background:#4E6E51"><div class="band-name">Sage Deep</div></div>
+      <div class="band" style="background:#7C9A7E"><div class="band-name">Sage</div></div>
+      <div class="band" style="background:#D4E4D5"><div class="band-name">Sage Pale</div></div>
+      <div class="band" style="background:#C4A882"><div class="band-name">Stone</div></div>
+      <div class="band" style="background:#B87333"><div class="band-name">Copper</div></div>
+      <div class="band" style="background:#F7F3EE"><div class="band-name">Ivory</div></div>
+    </div>
+    <div class="palette-note">
+      <p>"Your palette is the first thing we'll decide together. It becomes the lens through which every other choice is made — and the guarantee that your day feels like one coherent, beautiful whole."</p>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="services-section">
+  <span class="label">Our Services</span>
+  <h2>Thoughtfully Curated,<br>Perfectly Executed</h2>
+  <div class="rule"></div>
+  <div class="services-grid">
+    <div class="service-item">
+      <div class="service-icon-wrap">◈</div>
+      <div class="service-text">
+        <h3>Full Wedding Planning</h3>
+        <p>Complete design, coordination and execution — from the first sketch session to the last dance of the evening.</p>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-icon-wrap">✦</div>
+      <div class="service-text">
+        <h3>Floral & Décor Design</h3>
+        <p>Botanicals and décor chosen with your palette as a guide — every arrangement a deliberate part of the whole.</p>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-icon-wrap">◇</div>
+      <div class="service-text">
+        <h3>Catering & Menu Curation</h3>
+        <p>Seasonal menus curated by flavor, presentation, and the story you want to tell with your food.</p>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-icon-wrap">○</div>
+      <div class="service-text">
+        <h3>Photography & Video</h3>
+        <p>Photographers selected for their sensitivity to light, mood, and the particular atmosphere of your day.</p>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-icon-wrap">♩</div>
+      <div class="service-text">
+        <h3>Entertainment & Music</h3>
+        <p>Curated sound — from ceremony to celebration — chosen to complement the emotional arc of your day.</p>
+      </div>
+    </div>
+    <div class="service-item">
+      <div class="service-icon-wrap">✈</div>
+      <div class="service-text">
+        <h3>Destination Weddings</h3>
+        <p>Seamless planning for any location in the world — so the only thing you feel on the day is joy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stories" class="testi-section">
+  <div class="testi-layout">
+    <div class="testi-intro">
+      <span class="label">Our Couples</span>
+      <h2>Stories of<br>Perfect Days</h2>
+      <div class="rule"></div>
+      <p>Hear from the couples whose weddings became the days they always imagined — but somehow more beautiful than they could have hoped.</p>
+    </div>
+    <div class="testi-list">
+      <div class="testi-card">
+        <p class="testi-text">"She drew our ceremony arch during the very first meeting. I hadn't described it fully — she just understood it. Seeing it on paper was the first moment I believed our wedding would actually look the way I'd always imagined."</p>
+        <div class="testi-by">— Marta & Diogo · Alentejo, 2024</div>
+      </div>
+      <div class="testi-card">
+        <p class="testi-text">"Once we settled on sage, warm stone, and copper — every decision after that was easy. The palette was our compass. Everything just flowed. It's remarkable how much clarity comes from starting with color."</p>
+        <div class="testi-by">— Beatriz & António · Douro Valley, 2023</div>
+      </div>
+      <div class="testi-card">
+        <p class="testi-text">"She noticed that one of the table runners was a shade lighter than the others — two hours before the ceremony. Things like that would normally slip through. Not with her. She sees everything."</p>
+        <div class="testi-by">— Clara & Rui · Cascais, 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <div class="contact-left">
+    <span class="label">Get in Touch</span>
+    <h2>Let's Start<br>Sketching</h2>
+    <div class="rule"></div>
+    <p>Tell us about your vision, and we'll begin the conversation — and the first sketch — straight away. Your perfect day is waiting to take shape.</p>
+    <div class="contact-item"><div class="ci-dot"></div>hello@fadoweddings.com</div>
+    <div class="contact-item"><div class="ci-dot"></div>Mon–Sat · 9am to 7pm</div>
+    <div class="contact-item"><div class="ci-dot"></div>Lisbon, Portugal · Worldwide</div>
+  </div>
+  <form>
+    <div class="row2">
+      <input type="text" placeholder="Your name">
+      <input type="email" placeholder="Email">
+    </div>
+    <input type="text" placeholder="Partner's name">
+    <input type="text" placeholder="Wedding date or timeframe">
+    <select>
+      <option value="" disabled selected>What can we help with?</option>
+      <option>Full Wedding Planning</option>
+      <option>Partial Planning</option>
+      <option>Day-of Coordination</option>
+      <option>Destination Wedding</option>
+    </select>
+    <textarea placeholder="Tell us about your vision — the more detail, the better..."></textarea>
+    <button type="submit" class="sub-btn">Send Your Story</button>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2026 <em>Fado</em> Event Planning — Every detail in harmony</p>
+</footer>
+
+</body>
+</html>

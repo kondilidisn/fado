@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fado – The Grand Romance</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bordeaux: #722F37;
+    --wine: #4A1020;
+    --blush: #E8C4C4;
+    --champagne: #D4AF37;
+    --gold-pale: #F0E6C0;
+    --cream: #FFF8F0;
+    --off-white: #FDFAF5;
+    --dark: #1A0810;
+    --text: #2C1215;
+    --text-mid: #5C3035;
+    --text-light: #8A6065;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: Georgia, 'Times New Roman', serif; background: var(--off-white); color: var(--text); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(253,250,245,0.97); backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(114,47,55,0.12);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 4rem; height: 70px;
+  }
+  .nav-left, .nav-right { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-left a, .nav-right a {
+    text-decoration: none; color: var(--text-light);
+    font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-left a:hover, .nav-right a:hover { color: var(--bordeaux); }
+  .nav-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    text-align: center;
+  }
+  .nav-logo-main {
+    font-size: 1.6rem; letter-spacing: 0.2em; color: var(--bordeaux);
+    text-transform: uppercase; display: block;
+  }
+  .nav-logo-sub {
+    font-size: 0.55rem; letter-spacing: 0.45em; text-transform: uppercase;
+    color: var(--champagne); display: block; margin-top: -2px;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(170deg, var(--wine) 0%, var(--bordeaux) 50%, #9B3040 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; position: relative; overflow: hidden; padding: 6rem 2rem 4rem;
+  }
+  /* Ornamental corners */
+  .hero::before, .hero::after {
+    content: '';
+    position: absolute;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(212,175,55,0.2);
+  }
+  .hero::before { top: 80px; left: 40px; border-right: none; border-bottom: none; }
+  .hero::after { bottom: 40px; right: 40px; border-left: none; border-top: none; }
+  .hero-ornament {
+    position: absolute; color: rgba(212,175,55,0.12);
+    font-size: 18rem; line-height: 1; user-select: none; pointer-events: none;
+    font-style: italic;
+  }
+  .hero-ornament-left { left: -2rem; top: 50%; transform: translateY(-50%); }
+  .hero-ornament-right { right: -2rem; top: 50%; transform: translateY(-50%); }
+  .hero-top-rule {
+    display: flex; align-items: center; gap: 1.2rem;
+    color: rgba(212,175,55,0.6); font-size: 0.65rem;
+    letter-spacing: 0.5em; text-transform: uppercase; margin-bottom: 2.5rem;
+  }
+  .hero-top-rule::before, .hero-top-rule::after {
+    content: ''; flex: 1; max-width: 80px; height: 1px;
+    background: rgba(212,175,55,0.35);
+  }
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: normal;
+    color: var(--gold-pale); line-height: 1.1; margin-bottom: 0.3rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--champagne); }
+  .hero-flourish {
+    color: rgba(212,175,55,0.5); font-size: 2.5rem; line-height: 1.2;
+    margin: 0.3rem 0;
+  }
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.4rem); color: rgba(240,230,192,0.7);
+    font-style: italic; margin-bottom: 2rem;
+  }
+  .hero-desc {
+    max-width: 520px; margin: 0 auto 3rem;
+    color: rgba(232,196,196,0.7); line-height: 1.85; font-size: 0.95rem;
+  }
+  .hero-buttons { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+  .btn-gold {
+    padding: 1rem 2.5rem;
+    background: linear-gradient(135deg, var(--champagne), #B8960C);
+    color: var(--wine); text-decoration: none; font-size: 0.8rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    transition: all 0.3s; border: none; cursor: pointer; font-family: Georgia;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,175,55,0.3); }
+  .btn-bordered {
+    padding: 1rem 2.5rem;
+    border: 1px solid rgba(212,175,55,0.4); color: var(--gold-pale);
+    text-decoration: none; font-size: 0.8rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    transition: all 0.3s; background: transparent;
+  }
+  .btn-bordered:hover { border-color: var(--champagne); background: rgba(212,175,55,0.08); }
+  .hero-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(26,8,16,0.5); padding: 1.2rem 4rem;
+    display: flex; justify-content: space-around;
+    border-top: 1px solid rgba(212,175,55,0.15);
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-n { font-size: 1.6rem; color: var(--champagne); display: block; }
+  .hero-stat-l { font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(232,196,196,0.5); }
+
+  /* DIVIDER */
+  .ornamental-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1.5rem; padding: 2rem;
+    background: var(--off-white);
+  }
+  .od-line { flex: 1; max-width: 200px; height: 1px; background: linear-gradient(to right, transparent, rgba(114,47,55,0.3), transparent); }
+  .od-center { color: var(--champagne); font-size: 1.2rem; letter-spacing: 0.3em; }
+
+  /* SECTION */
+  section { padding: 6rem 5rem; }
+  .sec-header { text-align: center; margin-bottom: 4rem; }
+  .sec-kicker {
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+    font-size: 0.65rem; letter-spacing: 0.45em; text-transform: uppercase;
+    color: var(--champagne); margin-bottom: 1.2rem;
+  }
+  .sec-kicker::before, .sec-kicker::after { content: '◆'; font-size: 0.4rem; opacity: 0.5; }
+  h2 { font-size: clamp(2rem, 3.5vw, 3rem); font-weight: normal; color: var(--bordeaux); }
+  h2 em { font-style: italic; color: var(--text-mid); }
+  .sec-rule {
+    display: flex; align-items: center; gap: 1rem; justify-content: center; margin: 1.2rem 0 1.5rem;
+  }
+  .sec-rule-line { width: 50px; height: 1px; background: var(--champagne); }
+  .sec-rule-diamond { color: var(--champagne); font-size: 0.5rem; }
+  .sec-desc { max-width: 560px; margin: 0 auto; color: var(--text-light); line-height: 1.85; font-size: 0.95rem; }
+
+  /* PROCESS */
+  .process-section { background: var(--cream); }
+  .process-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .process-col-left {}
+  .process-col-left h3 { font-size: 1.4rem; color: var(--bordeaux); font-weight: normal; margin-bottom: 1rem; }
+  .process-col-left p { color: var(--text-light); line-height: 1.85; margin-bottom: 1.5rem; font-size: 0.93rem; }
+  .process-col-right { display: flex; flex-direction: column; gap: 1.5rem; }
+  .process-card {
+    background: white; padding: 1.8rem;
+    border: 1px solid rgba(114,47,55,0.1);
+    border-left: 3px solid var(--bordeaux);
+    transition: box-shadow 0.3s;
+  }
+  .process-card:hover { box-shadow: 0 4px 20px rgba(114,47,55,0.1); }
+  .pc-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.6rem; }
+  .pc-num {
+    font-size: 0.65rem; letter-spacing: 0.3em; color: var(--champagne); text-transform: uppercase;
+  }
+  .pc-title { font-size: 1rem; color: var(--bordeaux); }
+  .process-card p { font-size: 0.87rem; color: var(--text-light); line-height: 1.75; }
+  /* Sketch illustration */
+  .sketch-illustration {
+    background: var(--off-white); border: 1px solid rgba(114,47,55,0.1);
+    padding: 2rem; margin-top: 2rem; text-align: center; position: relative;
+  }
+  .sketch-illustration::before {
+    content: 'Working sketch · Session 1';
+    position: absolute; top: 0.8rem; left: 1rem;
+    font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(114,47,55,0.3); font-style: italic;
+  }
+  .sketch-illustration svg { width: 100%; max-width: 320px; }
+
+  /* PALETTE */
+  .palette-section { background: var(--dark); text-align: center; }
+  .palette-section h2 { color: var(--gold-pale); }
+  .palette-section .sec-kicker { color: rgba(212,175,55,0.6); }
+  .palette-section .sec-desc { color: rgba(232,196,196,0.55); }
+  .palette-grid {
+    display: flex; flex-direction: column; gap: 2rem; max-width: 700px; margin: 3rem auto 0; text-align: left;
+  }
+  .palette-row-item { display: flex; align-items: center; gap: 1.5rem; }
+  .palette-swatch {
+    width: 80px; height: 80px; flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .palette-detail {}
+  .palette-color-name { font-size: 1rem; color: var(--gold-pale); margin-bottom: 0.3rem; }
+  .palette-color-use { font-size: 0.8rem; color: rgba(232,196,196,0.45); font-style: italic; }
+  .palette-tagline {
+    margin-top: 3rem; font-size: 0.85rem; font-style: italic;
+    color: rgba(212,175,55,0.4); letter-spacing: 0.1em;
+  }
+
+  /* SERVICES */
+  .services-section { background: var(--off-white); }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 0; }
+  .svc {
+    padding: 2.5rem 2rem;
+    background: white; border: 1px solid rgba(114,47,55,0.1);
+    text-align: center; transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .svc::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: linear-gradient(to right, var(--bordeaux), var(--champagne));
+    transform: scaleX(0); transition: transform 0.4s; transform-origin: left;
+  }
+  .svc:hover::after { transform: scaleX(1); }
+  .svc:hover { box-shadow: 0 8px 30px rgba(114,47,55,0.1); }
+  .svc-icon {
+    width: 50px; height: 50px; margin: 0 auto 1.2rem;
+    border: 1px solid rgba(114,47,55,0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--bordeaux); font-size: 1.1rem;
+  }
+  .svc h3 { font-size: 1rem; color: var(--bordeaux); margin-bottom: 0.6rem; font-weight: normal; }
+  .svc p { font-size: 0.85rem; color: var(--text-light); line-height: 1.7; }
+
+  /* TESTIMONIALS */
+  .testimonials-section { background: var(--cream); }
+  .testi-masonry { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .testi {
+    padding: 2.5rem; background: white;
+    border: 1px solid rgba(114,47,55,0.1);
+    position: relative;
+  }
+  .testi-top {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;
+  }
+  .testi-stars { color: var(--champagne); font-size: 0.7rem; letter-spacing: 0.2em; }
+  .testi-open { font-size: 3.5rem; color: rgba(114,47,55,0.12); line-height: 0.8; font-family: Georgia; }
+  .testi-text { font-size: 0.92rem; font-style: italic; color: var(--text-mid); line-height: 1.8; margin-bottom: 1.5rem; }
+  .testi-couple { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--bordeaux); }
+  .testi-location { font-size: 0.68rem; color: var(--text-light); margin-top: 0.2rem; }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--wine);
+    display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start;
+  }
+  .contact-left { color: var(--gold-pale); }
+  .contact-left .sec-kicker { color: rgba(212,175,55,0.6); justify-content: flex-start; }
+  .contact-left .sec-kicker::before, .contact-left .sec-kicker::after { display: none; }
+  .contact-left h2 { color: var(--gold-pale); font-size: 2.2rem; }
+  .contact-left p { color: rgba(232,196,196,0.65); line-height: 1.85; margin: 1.5rem 0 2rem; font-size: 0.93rem; }
+  .contact-detail-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.7rem; font-size: 0.85rem; color: rgba(232,196,196,0.5); }
+  .cdr-diamond { color: var(--champagne); font-size: 0.5rem; }
+  form { display: flex; flex-direction: column; gap: 1rem; }
+  .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  input, textarea, select {
+    width: 100%; padding: 0.9rem 1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,175,55,0.2);
+    color: var(--gold-pale); font-family: Georgia; font-size: 0.88rem; outline: none;
+    transition: border-color 0.3s;
+  }
+  input::placeholder, textarea::placeholder { color: rgba(232,196,196,0.3); }
+  input:focus, textarea:focus, select:focus { border-color: rgba(212,175,55,0.5); }
+  textarea { min-height: 120px; resize: vertical; }
+  select option { background: var(--wine); }
+  .form-btn {
+    padding: 1rem 2.5rem; width: fit-content;
+    background: linear-gradient(135deg, var(--champagne), #B8960C);
+    color: var(--wine); border: none; cursor: pointer;
+    font-family: Georgia; font-size: 0.8rem;
+    letter-spacing: 0.25em; text-transform: uppercase; transition: opacity 0.3s;
+  }
+  .form-btn:hover { opacity: 0.85; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); text-align: center; padding: 2.5rem;
+    font-size: 0.75rem; letter-spacing: 0.15em;
+    color: rgba(232,196,196,0.25);
+    border-top: 1px solid rgba(212,175,55,0.1);
+  }
+  footer span { color: rgba(212,175,55,0.5); }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-left, .nav-right { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .process-columns, .testi-masonry, .contact-section { grid-template-columns: 1fr; gap: 2rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .f-row { grid-template-columns: 1fr; }
+    .hero::before, .hero::after, .hero-ornament { display: none; }
+    .hero-bottom { padding: 1rem; flex-wrap: wrap; gap: 1rem; }
+    .palette-grid { gap: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <ul class="nav-left">
+    <li><a href="#process">Our Way</a></li>
+    <li><a href="#palette">Palette</a></li>
+  </ul>
+  <div class="nav-center">
+    <span class="nav-logo-main">Fado</span>
+    <span class="nav-logo-sub">Event Planning</span>
+  </div>
+  <ul class="nav-right">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Begin</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-ornament hero-ornament-left">F</div>
+  <div class="hero-ornament hero-ornament-right">F</div>
+  <div class="hero-top-rule">Est. 2014 · Wedding Planning</div>
+  <h1>The Grand Romance</h1>
+  <div class="hero-flourish">— ◆ —</div>
+  <p class="hero-subtitle">Where vision becomes ceremony, and ceremony becomes memory</p>
+  <p class="hero-desc">At Fado, your wedding is never assembled — it is composed. From the palette to the final toast, every element is orchestrated into one seamless, deeply personal work of art.</p>
+  <div class="hero-buttons">
+    <a href="#contact" class="btn-gold">Begin Your Story</a>
+    <a href="#process" class="btn-bordered">Discover Our Process</a>
+  </div>
+  <div class="hero-bottom">
+    <div class="hero-stat"><span class="hero-stat-n">250+</span><span class="hero-stat-l">Weddings</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">12</span><span class="hero-stat-l">Years</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">98%</span><span class="hero-stat-l">Happy Couples</span></div>
+    <div class="hero-stat"><span class="hero-stat-n">30+</span><span class="hero-stat-l">Venue Partners</span></div>
+  </div>
+</section>
+
+<div class="ornamental-divider">
+  <div class="od-line"></div>
+  <div class="od-center">◆ ◇ ◆</div>
+  <div class="od-line"></div>
+</div>
+
+<section id="process" class="process-section">
+  <div class="sec-header">
+    <div class="sec-kicker">The Fado Method</div>
+    <h2>Planning You Can <em>See and Feel</em></h2>
+    <div class="sec-rule"><div class="sec-rule-line"></div><div class="sec-rule-diamond">◆</div><div class="sec-rule-line"></div></div>
+    <p class="sec-desc">We believe a wedding planner should do more than manage logistics. She should be an artist — one who helps you see your day clearly before it arrives.</p>
+  </div>
+  <div class="process-columns">
+    <div class="process-col-left">
+      <h3>We sketch your wedding as we talk about it</h3>
+      <p>Most wedding planning happens in the abstract — lists, spreadsheets, vendor emails. At Fado, it happens on paper, in front of you, in real time.</p>
+      <p>During every consultation, we draw. Your ceremony arch takes shape before your eyes. Your table arrangement finds its proportions. The scale and mood of your day become visible — not imagined, but seen.</p>
+      <p>This is the most powerful gift we can offer: clarity. When you can see it, you can truly decide. And when you truly decide, the day becomes exactly what you always wanted.</p>
+      <div class="sketch-illustration">
+        <svg viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Ballroom arch sketch -->
+          <path d="M50 210 L50 80 Q50 30 160 20 Q270 30 270 80 L270 210" stroke="rgba(114,47,55,0.5)" stroke-width="1.5" stroke-dasharray="5 3" fill="none"/>
+          <!-- Chandelier -->
+          <line x1="160" y1="20" x2="160" y2="55" stroke="rgba(212,175,55,0.5)" stroke-dasharray="2 2"/>
+          <circle cx="160" cy="60" r="12" stroke="rgba(212,175,55,0.4)" stroke-dasharray="3 2" fill="none"/>
+          <line x1="148" y1="65" x2="130" y2="80" stroke="rgba(212,175,55,0.3)" stroke-dasharray="2 1"/>
+          <line x1="172" y1="65" x2="190" y2="80" stroke="rgba(212,175,55,0.3)" stroke-dasharray="2 1"/>
+          <line x1="160" y1="72" x2="160" y2="85" stroke="rgba(212,175,55,0.3)" stroke-dasharray="2 1"/>
+          <!-- Florals on arch sides -->
+          <circle cx="50" cy="80" r="15" stroke="rgba(232,196,196,0.4)" stroke-dasharray="3 2" fill="none"/>
+          <circle cx="50" cy="60" r="10" stroke="rgba(232,196,196,0.35)" stroke-dasharray="2 2" fill="none"/>
+          <circle cx="38" cy="95" r="9" stroke="rgba(232,196,196,0.3)" stroke-dasharray="2 2" fill="none"/>
+          <circle cx="270" cy="80" r="15" stroke="rgba(232,196,196,0.4)" stroke-dasharray="3 2" fill="none"/>
+          <circle cx="270" cy="60" r="10" stroke="rgba(232,196,196,0.35)" stroke-dasharray="2 2" fill="none"/>
+          <circle cx="282" cy="95" r="9" stroke="rgba(232,196,196,0.3)" stroke-dasharray="2 2" fill="none"/>
+          <!-- Floor -->
+          <line x1="20" y1="210" x2="300" y2="210" stroke="rgba(114,47,55,0.2)" stroke-dasharray="4 3"/>
+          <!-- Annotations -->
+          <text x="5" y="75" fill="rgba(114,47,55,0.5)" font-size="8" font-family="Georgia" font-style="italic">blush roses</text>
+          <text x="135" y="48" fill="rgba(212,175,55,0.6)" font-size="8" font-family="Georgia" font-style="italic">chandelier?</text>
+        </svg>
+      </div>
+    </div>
+    <div class="process-col-right">
+      <div class="process-card">
+        <div class="pc-top">
+          <span class="pc-num">Step 01</span>
+        </div>
+        <div class="pc-title">The First Conversation</div>
+        <p>You speak, we listen — and we draw. Your vision becomes visible in the first session itself. By the end, you leave with something in your hands.</p>
+      </div>
+      <div class="process-card">
+        <div class="pc-top">
+          <span class="pc-num">Step 02</span>
+        </div>
+        <div class="pc-title">Choosing Your Palette</div>
+        <p>Together we select your wedding's color soul — the palette that will flow through every ribbon, petal, and table linen, binding everything together.</p>
+      </div>
+      <div class="process-card">
+        <div class="pc-top">
+          <span class="pc-num">Step 03</span>
+        </div>
+        <div class="pc-title">Detail by Detail</div>
+        <p>Each session refines the picture further. No detail is too small. The height of the centerpieces. The texture of the napkin. The arc of the aisle. All examined through the lens of your palette.</p>
+      </div>
+      <div class="process-card">
+        <div class="pc-top">
+          <span class="pc-num">Step 04</span>
+        </div>
+        <div class="pc-title">The Perfect Execution</div>
+        <p>On the day, we are present — overseeing every detail with the precision and care that only comes from having planned it, sketched it, and lived it with you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornamental-divider">
+  <div class="od-line"></div>
+  <div class="od-center">◇</div>
+  <div class="od-line"></div>
+</div>
+
+<section id="palette" class="palette-section">
+  <div class="sec-header">
+    <div class="sec-kicker">The Foundation</div>
+    <h2>Your Palette. Your World.</h2>
+    <div class="sec-rule"><div class="sec-rule-line" style="background:rgba(212,175,55,0.4)"></div><div class="sec-rule-diamond">◆</div><div class="sec-rule-line" style="background:rgba(212,175,55,0.4)"></div></div>
+    <p class="sec-desc">A wedding without a palette is a room without a key. We begin every journey by finding your colors — and those colors become the language everything else speaks.</p>
+  </div>
+  <div class="palette-grid">
+    <div class="palette-row-item">
+      <div class="palette-swatch" style="background:#722F37"></div>
+      <div class="palette-detail">
+        <div class="palette-color-name">Bordeaux</div>
+        <div class="palette-color-use">Primary — ceremony drapery, table runners, stationery borders</div>
+      </div>
+    </div>
+    <div class="palette-row-item">
+      <div class="palette-swatch" style="background:#D4AF37"></div>
+      <div class="palette-detail">
+        <div class="palette-color-name">Champagne Gold</div>
+        <div class="palette-color-use">Accent — candle holders, ribbon, hardware, calligraphy ink</div>
+      </div>
+    </div>
+    <div class="palette-row-item">
+      <div class="palette-swatch" style="background:#E8C4C4"></div>
+      <div class="palette-detail">
+        <div class="palette-color-name">Antique Blush</div>
+        <div class="palette-color-use">Soft — florals, napkins, bridesmaid tones, paper goods</div>
+      </div>
+    </div>
+    <div class="palette-row-item">
+      <div class="palette-swatch" style="background:#F0E6C0"></div>
+      <div class="palette-detail">
+        <div class="palette-color-name">Champagne Pale</div>
+        <div class="palette-color-use">Base — table linens, stationery, invitation suite background</div>
+      </div>
+    </div>
+  </div>
+  <p class="palette-tagline">— Your palette is yet to be written. We'll write it together. —</p>
+</section>
+
+<section id="services" class="services-section">
+  <div class="sec-header">
+    <div class="sec-kicker">What We Offer</div>
+    <h2>Full Service, <em>Complete Harmony</em></h2>
+    <div class="sec-rule"><div class="sec-rule-line"></div><div class="sec-rule-diamond">◆</div><div class="sec-rule-line"></div></div>
+  </div>
+  <div class="services-grid">
+    <div class="svc">
+      <div class="svc-icon">◈</div>
+      <h3>Full Wedding Planning</h3>
+      <p>From first sketch to final dance — every element designed, coordinated, and executed with precision.</p>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">✦</div>
+      <h3>Floral & Décor Design</h3>
+      <p>Florals and furnishings chosen as part of your palette — not as separate pieces, but as one composition.</p>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">◇</div>
+      <h3>Catering & Menus</h3>
+      <p>Menus crafted to complement the tone and aesthetic of your day — a feast that belongs to your story.</p>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">○</div>
+      <h3>Photography & Video</h3>
+      <p>Visual artists selected for their mastery of mood and light — capturing your day as it truly feels.</p>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">♩</div>
+      <h3>Entertainment & Music</h3>
+      <p>Sound chosen deliberately — each song and silence playing its part in the arc of your celebration.</p>
+    </div>
+    <div class="svc">
+      <div class="svc-icon">✈</div>
+      <h3>Destination Weddings</h3>
+      <p>Any venue, any country — your dream realized wherever in the world it lives.</p>
+    </div>
+  </div>
+</section>
+
+<section id="stories" class="testimonials-section">
+  <div class="sec-header">
+    <div class="sec-kicker">Our Couples Speak</div>
+    <h2>Moments That <em>Last Forever</em></h2>
+    <div class="sec-rule"><div class="sec-rule-line"></div><div class="sec-rule-diamond">◆</div><div class="sec-rule-line"></div></div>
+  </div>
+  <div class="testi-masonry">
+    <div class="testi">
+      <div class="testi-top">
+        <div class="testi-stars">★ ★ ★ ★ ★</div>
+        <div class="testi-open">"</div>
+      </div>
+      <p class="testi-text">She began sketching before I'd even finished my sentence. I looked down and there was my ceremony arch — exactly as I'd always imagined it, on paper, in front of me. I had to stop myself from crying.</p>
+      <div class="testi-couple">— Valentina & Marco</div>
+      <div class="testi-location">Lisbon, September 2024</div>
+    </div>
+    <div class="testi">
+      <div class="testi-top">
+        <div class="testi-stars">★ ★ ★ ★ ★</div>
+        <div class="testi-open">"</div>
+      </div>
+      <p class="testi-text">The palette session was the turning point. Once we agreed on bordeaux and champagne gold, every decision after became obvious. She had built us a compass — and everything north of it was beautiful.</p>
+      <div class="testi-couple">— Isabel & Frederico</div>
+      <div class="testi-location">Porto, May 2024</div>
+    </div>
+    <div class="testi">
+      <div class="testi-top">
+        <div class="testi-stars">★ ★ ★ ★ ★</div>
+        <div class="testi-open">"</div>
+      </div>
+      <p class="testi-text">There is no detail too small for her attention. She noticed the candle holders were two millimeters off-center on one table. Nobody else would have caught it. That is why our wedding looked the way it did.</p>
+      <div class="testi-couple">— Ana Luísa & Tomás</div>
+      <div class="testi-location">Cascais, June 2023</div>
+    </div>
+    <div class="testi">
+      <div class="testi-top">
+        <div class="testi-stars">★ ★ ★ ★ ★</div>
+        <div class="testi-open">"</div>
+      </div>
+      <p class="testi-text">What she builds with a sketch and a palette is not just a wedding — it's a world. We stepped into ours and never wanted to leave. It felt entirely ours, entirely intentional, entirely perfect.</p>
+      <div class="testi-couple">— Filipa & João</div>
+      <div class="testi-location">Douro Valley, October 2023</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <div class="contact-left">
+    <div class="sec-kicker">Let Us Begin</div>
+    <h2>Your Perfect Day<br>Starts Here</h2>
+    <p>Every great wedding begins with a first conversation — and a first sketch. Tell us about your vision and we will start painting it with you, one beautiful detail at a time.</p>
+    <div class="contact-detail-row"><div class="cdr-diamond">◆</div> hello@fadoweddings.com</div>
+    <div class="contact-detail-row"><div class="cdr-diamond">◆</div> Mon–Sat · 9am to 7pm</div>
+    <div class="contact-detail-row"><div class="cdr-diamond">◆</div> Lisbon, Portugal · Worldwide</div>
+  </div>
+  <form>
+    <div class="f-row">
+      <input type="text" placeholder="Your name">
+      <input type="email" placeholder="Email address">
+    </div>
+    <input type="text" placeholder="Partner's name">
+    <input type="text" placeholder="Estimated wedding date">
+    <select>
+      <option value="" disabled selected>Type of service</option>
+      <option>Full Wedding Planning</option>
+      <option>Partial Planning</option>
+      <option>Day-of Coordination</option>
+      <option>Destination Wedding</option>
+    </select>
+    <textarea placeholder="Tell us about your dream wedding..."></textarea>
+    <button type="submit" class="form-btn">Begin My Story</button>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2026 <span>Fado</span> Event Planning &nbsp;◆&nbsp; Crafted with precision, planned with soul</p>
+</footer>
+
+</body>
+</html>

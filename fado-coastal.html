@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fado – Coastal Dream</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sky: #89B4C5;
+    --sky-deep: #4A8FA8;
+    --sky-pale: #D6EAF0;
+    --sand: #E8D5B5;
+    --sand-deep: #C4A87A;
+    --coral: #E07B54;
+    --coral-pale: #F2C4AD;
+    --white: #FDFAF5;
+    --off-white: #F8F4EE;
+    --driftwood: #8B7355;
+    --dark: #1A2E38;
+    --text: #1E3340;
+    --text-mid: #4A6672;
+    --text-light: #7A9EAA;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: Georgia, serif; background: var(--white); color: var(--text); }
+
+  /* WAVE shape */
+  .wave-top {
+    width: 100%; height: 80px; display: block;
+    position: relative; overflow: hidden;
+  }
+  .wave-bottom {
+    width: 100%; height: 80px; display: block;
+    position: relative; overflow: hidden; transform: scaleY(-1);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(253,250,245,0.97); backdrop-filter: blur(10px);
+    padding: 1.2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--sky-pale);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 0.8rem; }
+  .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); }
+  .nav-brand-name { font-size: 1.4rem; letter-spacing: 0.15em; color: var(--sky-deep); }
+  .nav-brand-sub { font-size: 0.6rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--text-light); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  .nav-links a {
+    text-decoration: none; color: var(--text-mid);
+    font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--sky-deep); }
+  .nav-cta-btn {
+    padding: 0.6rem 1.5rem;
+    background: var(--coral); color: white;
+    text-decoration: none; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 25px; transition: all 0.3s;
+  }
+  .nav-cta-btn:hover { background: #C05E3A; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    position: relative; overflow: hidden; padding-top: 70px;
+  }
+  .hero-left {
+    background: linear-gradient(160deg, var(--sky-deep) 0%, #2E7A96 60%, #1A5570 100%);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 4rem; position: relative; overflow: hidden;
+  }
+  /* Wave pattern on hero */
+  .hero-left::after {
+    content: '';
+    position: absolute; bottom: -30px; left: -20px; right: -20px;
+    height: 120px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120'%3E%3Cpath d='M0,60 C300,120 600,0 900,60 C1050,90 1150,30 1200,60 L1200,120 L0,120 Z' fill='rgba(255,255,255,0.06)'/%3E%3C/svg%3E") no-repeat bottom / cover;
+  }
+  .hero-tag-line {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 30px; padding: 0.4rem 1rem;
+    font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: rgba(214,234,240,0.8); margin-bottom: 2rem; width: fit-content;
+  }
+  .hero-tag-line-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--coral); }
+  .hero h1 {
+    font-size: clamp(2.4rem, 4.5vw, 3.8rem); font-weight: normal;
+    color: white; line-height: 1.15; margin-bottom: 1.5rem;
+  }
+  .hero h1 span { color: var(--sand); font-style: italic; }
+  .hero-p { color: rgba(214,234,240,0.75); line-height: 1.85; font-size: 0.95rem; margin-bottom: 2.5rem; max-width: 380px; }
+  .cta-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-white {
+    padding: 0.85rem 1.8rem;
+    background: white; color: var(--sky-deep);
+    text-decoration: none; font-size: 0.8rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 3px; transition: all 0.3s;
+  }
+  .btn-white:hover { background: var(--sky-pale); transform: translateY(-1px); }
+  .btn-clear {
+    padding: 0.85rem 1.8rem;
+    border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.8);
+    text-decoration: none; font-size: 0.8rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    border-radius: 3px; transition: all 0.3s; background: transparent;
+  }
+  .btn-clear:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+  .hero-right {
+    background: var(--off-white);
+    display: flex; flex-direction: column;
+    justify-content: space-between; padding: 3rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-right-sketch {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .hero-right-sketch svg { width: 90%; max-width: 320px; }
+  .sketch-caption {
+    background: white; padding: 1rem 1.5rem;
+    border-left: 3px solid var(--coral);
+    font-size: 0.78rem; color: var(--text-mid); font-style: italic;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .hero-stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--sky-pale);
+    margin-top: 1rem;
+  }
+  .hs { text-align: center; padding: 1.2rem 0.5rem; border-right: 1px solid var(--sky-pale); }
+  .hs:last-child { border-right: none; }
+  .hs-n { font-size: 1.5rem; color: var(--sky-deep); display: block; }
+  .hs-l { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-light); }
+
+  /* SECTION BASE */
+  section { padding: 6rem 4rem; }
+  .tag {
+    display: inline-block; font-size: 0.65rem; letter-spacing: 0.45em;
+    text-transform: uppercase; color: var(--coral); margin-bottom: 0.8rem;
+  }
+  h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: normal; color: var(--text); margin-bottom: 1rem; }
+  h2 em { font-style: italic; color: var(--sky-deep); }
+  .underline-accent {
+    width: 50px; height: 3px; background: var(--coral);
+    border-radius: 2px; margin-bottom: 2rem;
+  }
+
+  /* PROCESS */
+  .process-section { background: var(--white); }
+  .process-intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-bottom: 5rem; }
+  .process-text p { color: var(--text-mid); line-height: 1.85; margin-bottom: 1rem; font-size: 0.95rem; }
+  /* Sketch notebook visual */
+  .notebook {
+    background: white; border: 1px solid var(--sky-pale);
+    box-shadow: 4px 4px 0 var(--sky-pale), 8px 8px 0 rgba(137,180,197,0.2);
+    padding: 1.5rem; position: relative;
+  }
+  .notebook-spiral {
+    position: absolute; left: -12px; top: 0; bottom: 0; width: 12px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 12px,
+      var(--sky-pale) 12px,
+      var(--sky-pale) 20px
+    );
+    border-radius: 3px 0 0 3px;
+  }
+  .notebook-header {
+    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--text-light); border-bottom: 1px solid var(--sky-pale);
+    padding-bottom: 0.6rem; margin-bottom: 1.2rem;
+    display: flex; justify-content: space-between;
+  }
+  .notebook svg { width: 100%; }
+  .notebook-note {
+    margin-top: 1rem; font-size: 0.72rem; font-style: italic;
+    color: var(--sky-deep); border-top: 1px dashed var(--sky-pale); padding-top: 0.7rem;
+  }
+  /* Steps */
+  .process-steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .pstep {
+    padding: 2rem 1.5rem; text-align: center;
+    background: var(--off-white); border: 1px solid var(--sky-pale);
+    border-top: 3px solid var(--sky);
+    transition: border-top-color 0.3s, transform 0.3s;
+    position: relative;
+  }
+  .pstep:hover { border-top-color: var(--coral); transform: translateY(-3px); }
+  .pstep-n {
+    font-size: 2.5rem; color: rgba(137,180,197,0.2); font-style: italic;
+    margin-bottom: 0.8rem; display: block;
+  }
+  .pstep h3 { font-size: 0.95rem; color: var(--sky-deep); margin-bottom: 0.6rem; font-weight: normal; }
+  .pstep p { font-size: 0.83rem; color: var(--text-light); line-height: 1.7; }
+  .pstep-sketch {
+    margin-top: 0.8rem; font-size: 0.72rem; color: var(--coral);
+    font-style: italic; border-top: 1px dashed rgba(224,123,84,0.3); padding-top: 0.6rem;
+  }
+
+  /* PALETTE */
+  .palette-section { background: var(--dark); }
+  .palette-section h2 em { color: var(--sand); }
+  .palette-section .tag { color: var(--sky-pale); }
+  .palette-section > p { color: rgba(214,234,240,0.55); line-height: 1.85; max-width: 540px; margin-bottom: 3.5rem; font-size: 0.95rem; }
+  .palette-display { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
+  .pd-swatch {
+    aspect-ratio: 1; position: relative; cursor: default;
+    transition: transform 0.3s;
+  }
+  .pd-swatch:hover { transform: scale(1.05); z-index: 2; }
+  .pd-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(26,46,56,0.85); padding: 0.8rem;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .pd-swatch:hover .pd-info { opacity: 1; }
+  .pd-name { font-size: 0.72rem; color: white; letter-spacing: 0.1em; }
+  .pd-role { font-size: 0.62rem; color: rgba(214,234,240,0.6); margin-top: 0.2rem; }
+  .palette-cta {
+    margin-top: 2.5rem; padding: 1.5rem;
+    background: rgba(137,180,197,0.08); border: 1px solid rgba(137,180,197,0.15);
+    display: flex; align-items: center; gap: 2rem; max-width: 600px;
+  }
+  .palette-cta-icon { font-size: 2rem; color: var(--coral); flex-shrink: 0; }
+  .palette-cta p { font-size: 0.88rem; color: rgba(214,234,240,0.5); font-style: italic; line-height: 1.7; }
+
+  /* SERVICES */
+  .services-section { background: var(--off-white); }
+  .services-pills { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem; margin-top: -1rem; }
+  .service-pill {
+    padding: 0.4rem 1rem; border-radius: 20px;
+    border: 1px solid var(--sky-pale); font-size: 0.72rem;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--sky-deep);
+    background: white; cursor: default; transition: all 0.3s;
+  }
+  .service-pill:hover { background: var(--sky-deep); color: white; border-color: var(--sky-deep); }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .svc-card {
+    background: white; padding: 2rem;
+    border-radius: 4px; border: 1px solid var(--sky-pale);
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .svc-card:hover { box-shadow: 0 8px 30px rgba(74,143,168,0.12); transform: translateY(-3px); }
+  .svc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .svc-glyph { font-size: 1.2rem; color: var(--sky-deep); }
+  .svc-num { font-size: 0.65rem; color: rgba(137,180,197,0.3); font-style: italic; }
+  .svc-card h3 { font-size: 1rem; color: var(--text); margin-bottom: 0.6rem; font-weight: normal; }
+  .svc-card p { font-size: 0.85rem; color: var(--text-light); line-height: 1.7; }
+  .svc-tag {
+    display: inline-block; margin-top: 1rem; padding: 0.2rem 0.7rem;
+    background: var(--sky-pale); font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--sky-deep);
+    border-radius: 12px;
+  }
+
+  /* TESTIMONIALS */
+  .testi-section { background: white; }
+  .testi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+  .testi-card {
+    padding: 2rem; background: var(--off-white);
+    border-radius: 4px; border-bottom: 3px solid var(--sky);
+    transition: border-color 0.3s;
+  }
+  .testi-card:hover { border-bottom-color: var(--coral); }
+  .testi-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--sky-pale); margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sky-deep); font-size: 0.7rem;
+  }
+  .testi-text { font-size: 0.9rem; font-style: italic; color: var(--text-mid); line-height: 1.8; margin-bottom: 1rem; }
+  .testi-name { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sky-deep); }
+  .testi-where { font-size: 0.68rem; color: var(--text-light); margin-top: 0.2rem; }
+
+  /* CONTACT */
+  .contact-section {
+    background: linear-gradient(160deg, var(--sky-deep) 0%, #2E7A96 100%);
+    display: grid; grid-template-columns: 1fr 1.1fr; gap: 5rem; align-items: start;
+  }
+  .contact-left { color: white; }
+  .contact-left .tag { color: rgba(214,234,240,0.7); }
+  .contact-left h2 { color: white; margin-bottom: 1rem; }
+  .contact-left h2 em { color: var(--sand); }
+  .contact-left p { color: rgba(214,234,240,0.7); line-height: 1.85; margin-bottom: 2rem; font-size: 0.93rem; }
+  .cd-row { display: flex; align-items: center; gap: 0.8rem; font-size: 0.85rem; color: rgba(214,234,240,0.6); margin-bottom: 0.6rem; }
+  .cd-icon { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+  form { display: flex; flex-direction: column; gap: 1rem; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  input, textarea, select {
+    width: 100%; padding: 0.9rem 1rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; font-family: Georgia; font-size: 0.88rem; outline: none;
+    border-radius: 3px; transition: border-color 0.3s;
+  }
+  input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.4); }
+  input:focus, textarea:focus, select:focus { border-color: rgba(232,213,181,0.6); }
+  textarea { min-height: 110px; resize: vertical; }
+  select option { background: var(--dark); }
+  .submit-btn {
+    padding: 0.9rem 2rem; width: fit-content;
+    background: var(--coral); color: white; border: none; cursor: pointer;
+    font-family: Georgia; font-size: 0.8rem;
+    letter-spacing: 0.2em; text-transform: uppercase; border-radius: 3px;
+    transition: all 0.3s;
+  }
+  .submit-btn:hover { background: #C05E3A; transform: translateY(-1px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); padding: 2rem;
+    text-align: center; font-size: 0.75rem; letter-spacing: 0.15em;
+    color: rgba(137,180,197,0.35);
+    border-top: 3px solid var(--sky-deep);
+  }
+  footer span { color: var(--coral); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 280px; }
+    .process-intro-grid, .contact-section { grid-template-columns: 1fr; gap: 2.5rem; }
+    .process-steps-grid { grid-template-columns: 1fr 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .palette-display { grid-template-columns: repeat(3, 1fr); }
+    .row2 { grid-template-columns: 1fr; }
+    .hero-stats-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    <div>
+      <div class="nav-brand-name">Fado</div>
+      <div class="nav-brand-sub">Event Planning</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#process">Process</a></li>
+    <li><a href="#palette">Palette</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#stories">Stories</a></li>
+    <li><a href="#contact" class="nav-cta-btn">Begin</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag-line"><div class="hero-tag-line-dot"></div>Wedding Planning · Est. 2014</div>
+    <h1>Paint Your<br>Perfect Day<br><span>One Detail<br>at a Time</span></h1>
+    <p class="hero-p">In every consultation, we sketch your vision together — live, on paper, in front of you — until your wedding looks exactly as you've always imagined it.</p>
+    <div class="cta-row">
+      <a href="#contact" class="btn-white">Begin Your Story</a>
+      <a href="#process" class="btn-clear">How We Work</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-sketch">
+      <svg viewBox="0 0 300 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Beach ceremony sketch -->
+        <!-- Horizon line -->
+        <line x1="0" y1="190" x2="300" y2="190" stroke="rgba(74,143,168,0.25)" stroke-dasharray="5 3"/>
+        <!-- Waves hint -->
+        <path d="M0 200 Q37 195 75 200 Q112 205 150 200 Q187 195 225 200 Q262 205 300 200" stroke="rgba(74,143,168,0.2)" stroke-dasharray="3 2" fill="none"/>
+        <!-- Two arch poles -->
+        <line x1="80" y1="190" x2="80" y2="60" stroke="rgba(74,143,168,0.4)" stroke-width="1.5" stroke-dasharray="5 2"/>
+        <line x1="220" y1="190" x2="220" y2="60" stroke="rgba(74,143,168,0.4)" stroke-width="1.5" stroke-dasharray="5 2"/>
+        <!-- Arch top -->
+        <path d="M80 60 Q150 20 220 60" stroke="rgba(74,143,168,0.45)" stroke-width="1.5" stroke-dasharray="4 2" fill="none"/>
+        <!-- Florals on arch -->
+        <circle cx="80" cy="60" r="14" stroke="rgba(224,123,84,0.35)" stroke-dasharray="3 2" fill="none"/>
+        <circle cx="80" cy="43" r="9" stroke="rgba(224,123,84,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="220" cy="60" r="14" stroke="rgba(224,123,84,0.35)" stroke-dasharray="3 2" fill="none"/>
+        <circle cx="220" cy="43" r="9" stroke="rgba(224,123,84,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <!-- Hanging florals on arch -->
+        <circle cx="130" cy="45" r="7" stroke="rgba(224,123,84,0.25)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="150" cy="38" r="7" stroke="rgba(224,123,84,0.25)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="170" cy="45" r="7" stroke="rgba(224,123,84,0.25)" stroke-dasharray="2 2" fill="none"/>
+        <!-- Aisle -->
+        <line x1="150" y1="190" x2="150" y2="130" stroke="rgba(196,168,122,0.3)" stroke-dasharray="4 3"/>
+        <!-- Couple silhouettes -->
+        <circle cx="140" cy="155" r="9" stroke="rgba(30,51,64,0.3)" stroke-width="1" fill="none"/>
+        <path d="M140 164 L140 178" stroke="rgba(30,51,64,0.3)" stroke-width="1"/>
+        <circle cx="161" cy="155" r="9" stroke="rgba(30,51,64,0.3)" stroke-width="1" fill="none"/>
+        <path d="M161 164 L161 178" stroke="rgba(30,51,64,0.3)" stroke-width="1"/>
+        <!-- Chairs hint -->
+        <rect x="95" y="163" width="14" height="10" stroke="rgba(196,168,122,0.2)" stroke-dasharray="2 1" fill="none"/>
+        <rect x="192" y="163" width="14" height="10" stroke="rgba(196,168,122,0.2)" stroke-dasharray="2 1" fill="none"/>
+        <!-- Annotations -->
+        <text x="5" y="55" fill="rgba(74,143,168,0.6)" font-size="8" font-family="Georgia" font-style="italic">coral roses</text>
+        <text x="225" y="40" fill="rgba(196,168,122,0.7)" font-size="8" font-family="Georgia" font-style="italic">= driftwood</text>
+        <text x="155" y="230" fill="rgba(74,143,168,0.5)" font-size="8" font-family="Georgia">ceremony · beach</text>
+      </svg>
+    </div>
+    <div class="sketch-caption">Beach ceremony sketch — drawn during our first consultation</div>
+    <div class="hero-stats-row">
+      <div class="hs"><span class="hs-n">250+</span><span class="hs-l">Weddings</span></div>
+      <div class="hs"><span class="hs-n">12</span><span class="hs-l">Years</span></div>
+      <div class="hs"><span class="hs-n">98%</span><span class="hs-l">Happy</span></div>
+      <div class="hs"><span class="hs-n">30+</span><span class="hs-l">Venues</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="process" class="process-section">
+  <div class="process-intro-grid">
+    <div class="process-text">
+      <span class="tag">The Fado Way</span>
+      <h2>We Sketch Your Wedding<br><em>As We Plan It</em></h2>
+      <div class="underline-accent"></div>
+      <p>Most planners work from spreadsheets. We work from sketches. Every consultation, we draw your vision in real time — so you can truly see what we're building, and refine it until it's exactly right.</p>
+      <p>It's the difference between guessing and knowing. Between abstract planning and something you can hold in your hands and say: <em>yes, that's it.</em></p>
+    </div>
+    <div class="notebook">
+      <div class="notebook-spiral"></div>
+      <div class="notebook-header">
+        <span>Fado · Working Notes</span>
+        <span>Session 01</span>
+      </div>
+      <svg viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Table layout top-down sketch -->
+        <ellipse cx="140" cy="100" rx="100" ry="60" stroke="rgba(74,143,168,0.4)" stroke-dasharray="5 3" stroke-width="1.2" fill="none"/>
+        <!-- Chairs -->
+        <circle cx="140" cy="42" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="168" cy="48" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="191" cy="65" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="140" cy="158" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="113" cy="152" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="90" cy="135" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="89" cy="65" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="113" cy="48" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="205" cy="100" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <circle cx="75" cy="100" r="7" stroke="rgba(74,143,168,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <!-- Centerpiece -->
+        <circle cx="140" cy="100" r="18" stroke="rgba(224,123,84,0.4)" stroke-dasharray="3 2" fill="none"/>
+        <circle cx="140" cy="100" r="8" stroke="rgba(224,123,84,0.3)" stroke-dasharray="2 2" fill="none"/>
+        <!-- Annotation -->
+        <text x="5" y="95" fill="rgba(196,168,122,0.7)" font-size="9" font-family="Georgia" font-style="italic">10 guests</text>
+        <text x="155" y="103" fill="rgba(74,143,168,0.5)" font-size="8" font-family="Georgia">florals</text>
+      </svg>
+      <div class="notebook-note">Round table · 10 guests · coral centerpiece · verify linen shade</div>
+    </div>
+  </div>
+  <div class="process-steps-grid">
+    <div class="pstep">
+      <span class="pstep-n">01</span>
+      <h3>Vision & First Sketch</h3>
+      <p>Your ideas become drawings in the very first session. You leave with something tangible to hold.</p>
+      <div class="pstep-sketch">Pencil to paper from day one</div>
+    </div>
+    <div class="pstep">
+      <span class="pstep-n">02</span>
+      <h3>Palette & Theme</h3>
+      <p>We choose your wedding colors together — the thread that will weave through every single element.</p>
+      <div class="pstep-sketch">The soul of your wedding</div>
+    </div>
+    <div class="pstep">
+      <span class="pstep-n">03</span>
+      <h3>Detail Harmony</h3>
+      <p>Each detail is reviewed through the lens of your palette — nothing is left to chance or inconsistency.</p>
+      <div class="pstep-sketch">Where beauty lives</div>
+    </div>
+    <div class="pstep">
+      <span class="pstep-n">04</span>
+      <h3>Perfect Execution</h3>
+      <p>On the day, we are present — eyes on every detail, ensuring the vision is realized exactly as sketched.</p>
+      <div class="pstep-sketch">Your dream, made real</div>
+    </div>
+  </div>
+</section>
+
+<section id="palette" class="palette-section">
+  <span class="tag">Your Color Story</span>
+  <h2>The Palette <em>is the Foundation</em></h2>
+  <div class="underline-accent"></div>
+  <p>Before we book a single vendor, we find your colors. Everything — florals, linens, stationery, candles, ribbons — will speak the same visual language. That's how a wedding becomes a world.</p>
+  <div class="palette-display">
+    <div class="pd-swatch" style="background:#4A8FA8">
+      <div class="pd-info"><div class="pd-name">Ocean Deep</div><div class="pd-role">Primary anchor</div></div>
+    </div>
+    <div class="pd-swatch" style="background:#89B4C5">
+      <div class="pd-info"><div class="pd-name">Sky Blue</div><div class="pd-role">Main palette</div></div>
+    </div>
+    <div class="pd-swatch" style="background:#D6EAF0">
+      <div class="pd-info"><div class="pd-name">Pale Shore</div><div class="pd-role">Soft accent</div></div>
+    </div>
+    <div class="pd-swatch" style="background:#E8D5B5">
+      <div class="pd-info"><div class="pd-name">Warm Sand</div><div class="pd-role">Linen & paper</div></div>
+    </div>
+    <div class="pd-swatch" style="background:#E07B54">
+      <div class="pd-info"><div class="pd-name">Coral</div><div class="pd-role">Statement accent</div></div>
+    </div>
+  </div>
+  <div class="palette-cta">
+    <div class="palette-cta-icon">◈</div>
+    <p>This is one possible palette — the Coastal Dream. In our first session, we'll discover yours. Hover each color to see where it lives in a real wedding.</p>
+  </div>
+</section>
+
+<section id="services" class="services-section">
+  <span class="tag">Our Services</span>
+  <h2>Everything <em>in Harmony</em></h2>
+  <div class="underline-accent"></div>
+  <div class="services-pills">
+    <div class="service-pill">Full Planning</div>
+    <div class="service-pill">Florals & Décor</div>
+    <div class="service-pill">Catering</div>
+    <div class="service-pill">Photography</div>
+    <div class="service-pill">Entertainment</div>
+    <div class="service-pill">Destinations</div>
+  </div>
+  <div class="services-grid">
+    <div class="svc-card">
+      <div class="svc-top"><div class="svc-glyph">◈</div><div class="svc-num">01</div></div>
+      <h3>Full Wedding Planning</h3>
+      <p>Complete design and coordination — from first sketch to final dance, every element perfectly orchestrated.</p>
+      <div class="svc-tag">Most popular</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-top"><div class="svc-glyph">✦</div><div class="svc-num">02</div></div>
+      <h3>Floral & Décor Design</h3>
+      <p>Blooms and décor chosen with your palette as compass — every arrangement deliberate, nothing random.</p>
+      <div class="svc-tag">In-house team</div>
+    </div>
+    <div class="svc-card">
+      <div class="svc-top"><div class="svc-glyph">◇</div><div class="svc-num">03</div></div>
+      <h3>Catering & Menus</h3>
+      <p>Seasonal, story-driven menus that complement the aesthetic and emotional tone of your celebration.</p>
+    </div>
+    <div class="svc-card">
+      <div class="svc-top"><div class="svc-glyph">○</div><div class="svc-num">04</div></div>
+      <h3>Photography & Video</h3>
+      <p>Artists chosen for their sensitivity to light and mood, curated to match your visual story.</p>
+    </div>
+    <div class="svc-card">
+      <div class="svc-top"><div class="svc-glyph">♩</div><div class="svc-num">05</div></div>
+      <h3>Entertainment & Music</h3>
+      <p>Sound designed for your day — from ceremony acoustics to the last song of the evening.</p>
+    </div>
+    <div class="svc-card">
+      <div class="svc-top"><div class="svc-glyph">✈</div><div class="svc-num">06</div></div>
+      <h3>Destination Weddings</h3>
+      <p>Your dream location, anywhere in the world. We handle the complexity; you feel only the magic.</p>
+      <div class="svc-tag">Worldwide</div>
+    </div>
+  </div>
+</section>
+
+<section id="stories" class="testi-section">
+  <span class="tag">Our Couples</span>
+  <h2>Moments They'll <em>Never Forget</em></h2>
+  <div class="underline-accent"></div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-avatar">S&J</div>
+      <p class="testi-text">"She had a sketch of our ceremony arch in front of me before I'd even finished describing it. I could suddenly see my wedding, for the first time. That feeling — of seeing it — is irreplaceable."</p>
+      <div class="testi-name">Sara & João</div>
+      <div class="testi-where">Algarve coast · Summer 2024</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-avatar">M&R</div>
+      <p class="testi-text">"Once we chose our palette — sky, sand, coral — every decision fell into place naturally. It was like having a key to a lock we didn't know existed. Everything just made sense."</p>
+      <div class="testi-name">Mariana & Rafael</div>
+      <div class="testi-where">Comporta beach · Spring 2024</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-avatar">L&F</div>
+      <p class="testi-text">"The detail she notices — it's extraordinary. She caught that the chairs on the left aisle had slightly different ribbons than the right. Nobody else would have seen that. We did."</p>
+      <div class="testi-name">Laura & Francisco</div>
+      <div class="testi-where">Sesimbra · Autumn 2023</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <div class="contact-left">
+    <span class="tag">Start Your Journey</span>
+    <h2>Let's Paint Your<br><em>Perfect Day</em></h2>
+    <div class="underline-accent" style="background:var(--coral)"></div>
+    <p>Tell us about your vision — and we'll start sketching it in our very first conversation. Your wedding is waiting to take shape.</p>
+    <div class="cd-row"><div class="cd-icon">@</div>hello@fadoweddings.com</div>
+    <div class="cd-row"><div class="cd-icon">◷</div>Mon–Sat · 9am–7pm</div>
+    <div class="cd-row"><div class="cd-icon">✦</div>Lisbon, Portugal · Worldwide</div>
+  </div>
+  <form>
+    <div class="row2">
+      <input type="text" placeholder="Your name">
+      <input type="email" placeholder="Email address">
+    </div>
+    <input type="text" placeholder="Partner's name">
+    <input type="text" placeholder="Wedding date or timeframe">
+    <select>
+      <option value="" disabled selected>How can we help?</option>
+      <option>Full Wedding Planning</option>
+      <option>Partial Planning</option>
+      <option>Day-of Coordination</option>
+      <option>Destination Wedding</option>
+    </select>
+    <textarea placeholder="Tell us your vision — the more vivid, the better..."></textarea>
+    <button type="submit" class="submit-btn">Send My Story</button>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2026 <span>Fado</span> Event Planning — Every detail in harmony, every moment with soul</p>
+</footer>
+
+</body>
+</html>
